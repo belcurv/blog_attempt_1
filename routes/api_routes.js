@@ -9,24 +9,70 @@ const router = require('express').Router();
 
 /* =========================== LOAD CONTROLLERS ============================ */
 
-const postCtrl = require('./controllers/post_ctrl');
+const postCtrl = require('../controllers/post_ctrl');
 
 
 /* ================================ ROUTES ================================= */
 
+// CREATE A POST
+//   Example: POST >> /api/posts
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          title  : String
+//          body   : String
+//          topics : [String]
+//        }
+//   Returns: JSON 'post' object on success.
+//
+router.post('/posts', (req, res) => {
+    const postTitle  = req.body.title;
+    const postBody   = req.body.body;
+    const topicNames = req.body.topics;
+
+    postCtrl.createPostWithTopics(postTitle, postBody, topicNames)
+        .then((newPost) => res.status(200).json(newPost))
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).json({ message: 'Error creating post...'});
+        });
+});
+
+
+// GET TOPICS
+//   Example: GET >> /api/topics
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          title  : String
+//          body   : String
+//          topics : [String]
+//        }
+//   Returns: JSON 'post' object on success.
+//
+
+
+
 // Get all posts.
 // Returns an array of blog post objects
-router.get('/posts', postCtrl.getPosts);
+// router.get('/posts', postCtrl.getPosts);
 
 
 // Get a single post.
 // Updates post 'reads' metadata property. Returns one blog post object.
-router.get('/posts/:id', postCtrl.getOnePost);
+router.get('/posts/:id', (req, res) => {
+    postCtrl.getPostById(req.params.id)
+        .then(post => res.status(200).json({ post }) )
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).json({ message: 'Error creating post...'});
+        });
+});
 
 
 // Like a post.
 // Updates post 'likes' metadata property. Returns status 200 'OK' - no data.
-router.put('/posts/:id/like', postCtrl.likeOnePost);
+// router.put('/posts/:id/like', postCtrl.likeOnePost);
 
 
 /* ================================ EXPORT ================================= */

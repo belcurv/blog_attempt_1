@@ -9,7 +9,7 @@ const router = require('express').Router();
 
 /* =========================== INIT CONTROLLERS ============================ */
 
-const staticCtrl = require('./controllers/static_ctrl');
+const staticCtrl = require('../controllers/static_ctrl');
 
 
 /* ================================ ROUTES ================================= */
