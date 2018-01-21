@@ -14,6 +14,7 @@ const topics = require('../db/models/topics');
 /* ============================ ROUTE HANDLERS ============================= */
 
 /** Create a new post with associated topics
+ *  Creates topics if they don't already exist.
  *  @param    {String}   postTitle    Title of the new post.
  *  @param    {String}   postBody     Body text of the new post.
  *  @param    {Array}    topicNames   Array of topics {String}
@@ -68,12 +69,30 @@ const getPosts = () => {
  *  @returns  {Object}            Post object w/nested topics
 */
 const getPostById = (postId) => {
-    return posts.getPostByIdWithTopics(postId);
+    return posts.incrementPostViews(postId)
+        .then(num => {
+            if (num) {
+                return posts.getPostByIdWithTopics(postId);
+            } else {
+                throw new Error('No post by that ID');
+            }
+        });
 };
 
 
-const likeOnePost = (req, res) => {
-    res.status(200).send('hello from the "likeOnePost" endpoint!');
+/** Like one post
+ *  @param    {Number}   postId   Id of the required post.
+ *  @returns  {Object}            Post object w/nested topics
+*/
+const likeOnePost = (postId) => {
+    return posts.incrementPostLikes(postId)
+        .then(num => {
+            if (num) {
+                return posts.getPostByIdWithTopics(postId);
+            } else {
+                throw new Error('No post by that ID');
+            }
+        });
 };
 
 
