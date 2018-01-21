@@ -60,6 +60,8 @@ const getPostByIdWithTopics = (id) => {
             return results.reduce((post, elem) => {
                 if (!post.title) { post.title = elem.title; }
                 if (!post.body) { post.body = elem.body; }
+                if (!post.views) { post.views = elem.views; }
+                if (!post.likes) { post.likes = elem.likes; }
                 if (!post.topics) { post.topics = []; }
                 post.topics.push(elem.topic_name);
                 return post;
@@ -68,6 +70,66 @@ const getPostByIdWithTopics = (id) => {
 };
 
 
+/** Get all posts, populate their associated topics
+ *  @returns   {Object}   Post plus nested array of topics.
+*/
+const getAllPostsWithTopics = () => {
+    return db
+        .select(`${TABLES.POSTS}.*`, `${TABLES.TOPICS}.topic as topic_name`)
+        .from(TABLES.POSTS)
+        .leftJoin(
+            TABLES.TOPICS_POSTS,
+            `${TABLES.TOPICS_POSTS}.post_id`,
+            `${TABLES.POSTS}.id`
+        )
+        .leftJoin(
+            TABLES.TOPICS,
+            `${TABLES.TOPICS_POSTS}.topic_id`,
+            `${TABLES.TOPICS}.id`
+        )
+        .then((results) => {
+            const uniques = [];
+            results.forEach(result => {
+                if (uniques.indexOf(result.id) === -1) {
+                    uniques.push(result.id);
+                }
+            });
+
+            return uniques.map((id) => {
+                let uniquePost = {};
+                const topics = results
+                    .reduce((acc, elem) => {
+                        if (elem.id === id) { acc.push(elem.topic_name); }
+                        return acc;
+                    }, []);
+
+                results.forEach((post) => {
+                    if (!uniquePost.title && post.id === id)  {
+                        uniquePost.title = post.title;
+                    }
+                    if (!uniquePost.body && post.id === id)   {
+                        uniquePost.body = post.body;
+                    }
+                    if (!uniquePost.views && post.id === id)  {
+                        uniquePost.views = post.views;
+                    }
+                    if (!uniquePost.likes && post.id === id)  {
+                        uniquePost.likes = post.likes;
+                    }
+                    if (!uniquePost.topics && post.id === id) {
+                        uniquePost.topics = topics;
+                    }
+                });
+
+                return uniquePost;
+            });
+
+        });
+};
+
+
 /* ================================ exports ================================ */
 
-module.exports = { createPost, attachPostTopic, getPostByIdWithTopics };
+module.exports = {
+    createPost, attachPostTopic, getPostByIdWithTopics, getAllPostsWithTopics
+};
