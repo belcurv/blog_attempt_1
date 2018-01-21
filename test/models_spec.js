@@ -3,6 +3,8 @@
 
 /* ================================= SETUP ================================= */
 
+process.env.NODE_ENV = 'testing';
+
 const { assert }     = require('chai');
 const { db, TABLES } = require('../db/knex');
 const posts          = require('../db/models/posts');
@@ -51,13 +53,14 @@ describe('db models', () => {
         let postId;
         let topicId;
 
-        // seed with a topic and post before each test
+        // seed with a topic and 2 posts before each test
         beforeEach(() => {
             return topics.createTopic(topicName)
                 .then((topic) => {
                     topicId = topic.id;
                     return posts.createPost(postTitle, postBody);
                 })
+                .then(() => posts.createPost(postTitle, postBody))
                 .then(([post]) => postId = post.id);
         });
 
@@ -81,6 +84,19 @@ describe('db models', () => {
                 .then((result) => {
                     assert.equal(result.title, postTitle);
                     assert.deepEqual(result.topics, [topicName]);
+                });
+        });
+
+        it('gets all posts with associated topics', () => {
+            return posts.attachPostTopic(postId, topicId)
+                .then(() => posts.getAllPostsWithTopics())
+                .then((results) => {
+                    assert.equal(Array.isArray(results), true);
+                    assert.equal(results.length, 2);
+                    assert.deepEqual(results[0].title, postTitle);
+                    assert.deepEqual(results[0].body, postBody);
+                    assert.deepEqual(results[0].views, 0);
+                    assert.typeOf(results[0].topics, 'array');
                 });
         });
     });

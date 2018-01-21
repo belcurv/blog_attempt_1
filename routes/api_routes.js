@@ -31,48 +31,56 @@ router.post('/posts', (req, res) => {
     const topicNames = req.body.topics;
 
     postCtrl.createPostWithTopics(postTitle, postBody, topicNames)
-        .then((newPost) => res.status(200).json(newPost))
-        .catch((err) => {
-            console.log(err);
-            return res.status(500).json({ message: 'Error creating post...'});
-        });
+        .then((post) => res.status(200).json(post))
+        .catch((err) => res.status(500).json({ message: err.message }) );
 });
 
 
-// GET TOPICS
-//   Example: GET >> /api/topics
+// GET ALL POSTS
+//   Example: GET >> /api/posts
+//   Secured: no
+//   Expects: null
+//   Returns: Array of post objects on success.
+//
+router.get('/posts', (req, res) => {
+    postCtrl.getPosts()
+        .then((posts) => res.status(200).json(posts))
+        .catch((err) => res.status(500).json({ message: err.message }) );
+});
+
+
+// GET ONE POST
+// Increments post's views counter.
+//   Example: GET >> /api/posts/3
 //   Secured: no
 //   Expects:
-//     1) request body properties : {
-//          title  : String
-//          body   : String
-//          topics : [String]
+//     1) request params : {
+//          id : Number
 //        }
-//   Returns: JSON 'post' object on success.
+//   Returns: updated post object on success.
 //
-
-
-
-// Get all posts.
-// Returns an array of blog post objects
-// router.get('/posts', postCtrl.getPosts);
-
-
-// Get a single post.
-// Updates post 'reads' metadata property. Returns one blog post object.
 router.get('/posts/:id', (req, res) => {
     postCtrl.getPostById(req.params.id)
-        .then(post => res.status(200).json({ post }) )
-        .catch((err) => {
-            console.log(err);
-            return res.status(500).json({ message: 'Error creating post...'});
-        });
+        .then(post => res.status(200).json(post) )
+        .catch((err) => res.status(404).json({ message: err.message }) );
 });
 
 
-// Like a post.
-// Updates post 'likes' metadata property. Returns status 200 'OK' - no data.
-// router.put('/posts/:id/like', postCtrl.likeOnePost);
+// LIKE ONE POST
+// Increments post's likes counter.
+//   Example: PUT >> /api/posts/3/like
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : Number
+//        }
+//   Returns: updated post object on success.
+//
+router.put('/posts/:id/like', (req, res) => {
+    postCtrl.likeOnePost(req.params.id)
+        .then(data => res.status(200).json(data) )
+        .catch((err) => res.status(404).json({ message: err.message }) );
+});
 
 
 /* ================================ EXPORT ================================= */
