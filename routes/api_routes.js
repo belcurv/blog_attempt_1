@@ -39,23 +39,20 @@ router.post('/posts', (req, res) => {
 });
 
 
-// GET TOPICS
-//   Example: GET >> /api/topics
+// GET ALL POSTS
+//   Example: GET >> /api/posts
 //   Secured: no
-//   Expects:
-//     1) request body properties : {
-//          title  : String
-//          body   : String
-//          topics : [String]
-//        }
-//   Returns: JSON 'post' object on success.
+//   Expects: null
+//   Returns: Array of post objects on success.
 //
-
-
-
-// Get all posts.
-// Returns an array of blog post objects
-// router.get('/posts', postCtrl.getPosts);
+router.get('/posts', (req, res) => {
+    postCtrl.getPosts()
+        .then((posts) => res.status(200).json(posts))
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).json({ message: 'Error creating post...'});
+        });
+});
 
 
 // Get a single post.

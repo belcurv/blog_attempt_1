@@ -54,11 +54,19 @@ const createPostWithTopics = (postTitle, postBody, topicNames) => {
         });
 };
 
-const getPosts = (req, res) => {
-    res.status(200).send('hello from the "getPosts" endpoint!');
+
+/** Get all posts
+ *  @returns  {Array}   Array of post objects w/their nested topics
+*/
+const getPosts = () => {
+    return posts.getAllPostsWithTopics();
 };
 
 
+/** Get one post
+ *  @param    {Number}   postId   Id of the required post.
+ *  @returns  {Object}            Post object w/nested topics
+*/
 const getPostById = (postId) => {
     return posts.getPostByIdWithTopics(postId);
 };
