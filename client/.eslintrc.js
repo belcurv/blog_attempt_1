@@ -17,7 +17,42 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+      // 4 spaces
+      'indent': ['error', 4],
+      // allow multi spaces
+      'no-multi-spaces': ['error', {
+          'exceptions': {
+              'Property': true,
+              'ImportDeclaration': true,
+              'VariableDeclarator': true
+          }}
+      ],
+      'key-spacing': ['error', {
+          'align': {
+              'beforeColon': true,
+              'afterColon': true,
+              'on': 'colon'
+          }
+      }],
+      'comma-dangle': ['error', {
+          'arrays': 'never',
+          'objects': 'never',
+          'imports': 'never',
+          'exports': 'never',
+          'functions': 'ignore'
+      }],
+      'no-underscore-dangle': ['error', { 'allow': ['_id'] }],
+      // disallow reassignment of function parameters
+      // disallow parameter object manipulation except for specific exclusions
+      'no-param-reassign': ['error', {
+        props: true,
+        ignorePropertyModificationsFor: [
+          'state', // for vuex state
+          'acc', // for reduce accumulators
+          'e' // for e.returnvalue
+        ]
+      }],
+      // allow debugger during development
+      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   }
 }
