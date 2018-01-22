@@ -1,0 +1,33 @@
+body, html {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+}
+
+.rendered pre {
+    border: none;
+    padding: 0.5em;
+    color: #fff;
+    background: #282a36;
+}
+
+.rendered p code {
+    padding: 2px 5px;
+    border: 1px solid #DDD;
+    background: #FFF;
+}
+
+.rendered blockquote {
+    background: rgb(200, 200, 200);
+    margin: 0 0 0 1em;
+    padding: 5px;
+    font-style: italic;
+}
+
+.rendered blockquote p {
+    margin: 0;
+}
