@@ -11,6 +11,7 @@ const bodyParser   = require('body-parser');
 const morgan       = require('morgan');
 const path         = require('path');
 const app          = express();
+const cors         = require('cors');
 const PORT         = process.env.PORT || 3000;
 
 // routes
@@ -19,6 +20,9 @@ const staticRoutes = require('./routes/static_routes');
 
 
 /* ============================= CONFIGURATION ============================= */
+
+// allows cors
+app.use(cors());
 
 // log http requests to server console
 app.use(morgan('dev'));
