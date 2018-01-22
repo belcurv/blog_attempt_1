@@ -4,11 +4,7 @@
 
 /* ================================= SETUP ================================= */
 
-const router = require('express').Router();
-
-
-/* =========================== LOAD CONTROLLERS ============================ */
-
+const router   = require('express').Router();
 const postCtrl = require('../controllers/post_ctrl');
 
 
