@@ -4,11 +4,7 @@
 
 /* ================================= SETUP ================================= */
 
-const router = require('express').Router();
-
-
-/* =========================== INIT CONTROLLERS ============================ */
-
+const router     = require('express').Router();
 const staticCtrl = require('../controllers/static_ctrl');
 
 
